@@ -1,0 +1,2 @@
+recursive-include vs/templates *
+recursive-include vs/static *
