@@ -1,4 +1,4 @@
-from vs.database.exception import IdAlreadyExists
+from vs.database.exception import IdAlreadyExists, IdNotFound
 from vs.database.base import VSDatabase
 import redis
 
@@ -18,4 +18,7 @@ class Redis(VSDatabase):
             raise IdAlreadyExists('Id already exists')
 
     def _delete(self, id):
-        self.redis.delete(id)
+        result = self.redis.delete(id)
+        if result == 0:
+            raise IdNotFound('Id not found')
+

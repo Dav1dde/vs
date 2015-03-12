@@ -10,7 +10,7 @@ errors = {
     },
     'IdNotFound': {
         'message': 'A short URL with that Id does not exist.',
-        'status': 410,
+        'status': 404,
     },
     'IdAlreadyExists': {
         'message': 'Id already exists, chose a different Id.',
