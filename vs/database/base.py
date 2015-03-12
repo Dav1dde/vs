@@ -37,7 +37,7 @@ class NullSigner(object):
 
 class VSDatabase(object):
     ALLOWED_CHARS = string.ascii_letters + string.digits + '-_'
-    MAX_LENGHTH = 10
+    MAX_LENGTH = 20
 
     def __init__(self):
         self._s = NullSigner()
@@ -55,7 +55,7 @@ class VSDatabase(object):
         id = ''.join(random.sample(alphabet, length))
         while self.has_id(id):
             id = ''.join(random.sample(alphabet, length))
-            length = min(length + 1, self.MAX_LENGHTH)
+            length = min(length + 1, self.MAX_LENGTH)
 
         return id
 
@@ -93,7 +93,7 @@ class VSDatabase(object):
                 break
         else:
             if not all(c in self.ALLOWED_CHARS for c in id) or \
-                    len(id) > self.MAX_LENGHTH:
+                    len(id) > self.MAX_LENGTH:
                 raise InvalidId('Id contains invalid characters')
 
             # if the key already exists, not our problem
