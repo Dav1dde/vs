@@ -1,7 +1,8 @@
 from vs.database.exception import (
     VSDatabaseException,
+    InvalidId, InvalidUrl,
     IdNotFound, IdAlreadyExists,
-    InvalidDeletionSecret
+    InvalidDeletionSecret,
 )
 
 from itsdangerous import Signer, want_bytes
@@ -13,8 +14,10 @@ import sys
 
 PY2 = sys.version_info[0] == 2
 if PY2:
+    from urlparse import urlparse
     text_type = unicode
 else:
+    from urllib.parse import urlparse
     text_type = str
 
 
@@ -33,7 +36,8 @@ class NullSigner(object):
 
 
 class VSDatabase(object):
-    ALLOWED_CHARS = string.ascii_letters + string.digits
+    ALLOWED_CHARS = string.ascii_letters + string.digits + '-_'
+    MAX_LENGHTH = 10
 
     def __init__(self):
         self._s = NullSigner()
@@ -51,7 +55,7 @@ class VSDatabase(object):
         id = ''.join(random.sample(alphabet, length))
         while self.has_id(id):
             id = ''.join(random.sample(alphabet, length))
-            length = length + 1
+            length = min(length + 1, self.MAX_LENGHTH)
 
         return id
 
@@ -71,6 +75,10 @@ class VSDatabase(object):
         return result is not None
 
     def create(self, url, id=None, expire=None):
+        p = urlparse(url)
+        if not p.scheme or not p.netloc:
+            raise InvalidUrl('Url does not contain scheme and/or netloc')
+
         if expire is not None:
             expire = datetime.timedelta(days=expire) if expire > 0 else None
 
@@ -84,6 +92,10 @@ class VSDatabase(object):
                     continue
                 break
         else:
+            if not all(c in self.ALLOWED_CHARS for c in id) or \
+                    len(id) > self.MAX_LENGHTH:
+                raise InvalidId('Id contains invalid characters')
+
             # if the key already exists, not our problem
             self._create(id, url, expire)
 

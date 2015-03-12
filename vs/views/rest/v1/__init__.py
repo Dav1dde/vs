@@ -20,6 +20,14 @@ errors = {
     'InvalidDeletionSecret': {
         'message': 'Invalid secret.',
         'status': 400
+    },
+    'InvalidId': {
+        'message': 'Id contains invalid characters.',
+        'status': 400
+    },
+    'InvalidUrl': {
+        'message': 'Url does not contain scheme and/or netloc.',
+        'status': 400
     }
 }
 
