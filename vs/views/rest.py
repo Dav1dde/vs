@@ -3,6 +3,26 @@ from flask.ext import restful
 from flask.ext.restful import reqparse
 
 
+errors = {
+    'VSDatabaseException': {
+        'message': 'Internal backend error.',
+        'status': 500,
+    },
+    'IdNotFound': {
+        'message': 'A short URL with that Id does not exist.',
+        'status': 410,
+    },
+    'IdAlreadyExists': {
+        'message': 'Id already exists, chose a different Id.',
+        'status': 400
+    },
+    'InvalidDeletionSecret': {
+        'message': 'Invalid secret.',
+        'status': 400
+    }
+
+}
+
 rest = Blueprint('rest', __name__)
 api = restful.Api(rest)
 
@@ -79,7 +99,7 @@ class ShortUrl(restful.Resource):
         )
 
         id, secret = g.database.create(
-            args['url'], expire=args.get('expire'), id=args.get('id')
+            args['url'], id=args.get('id'), expire=args.get('expire')
         )
         return {
             'id': id, 'secret': secret,

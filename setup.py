@@ -14,6 +14,8 @@ if __name__ == '__main__':
         install_requires=[
             'flask',
             'flask-restful',
+            'itsdangerous',
+            'redis'
         ],
         entry_points={
             'console_scripts': [

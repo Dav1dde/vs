@@ -2,8 +2,11 @@ from flask import Flask, g
 
 
 def create_application():
+    import vs.config
+
     app = Flask(__name__)
     app.config.from_object('vs.config')
+    app.config['DATABASE'].init_app(app)
 
     @app.before_request
     def before_request():

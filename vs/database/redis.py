@@ -1,20 +1,21 @@
+from vs.database.exception import IdAlreadyExists
+from vs.database.base import VSDatabase
+import redis
 
 
-class Redis(object):
-    def __init__(self, host='localhost', port=6379, db=0):
-        pass
+class Redis(VSDatabase):
+    def __init__(self, *args, **kwargs):
+        VSDatabase.__init__(self)
 
-    def get(self, id):
-        print('get', id)
-        return 'http://localhost'
+        self.redis = redis.StrictRedis(*args, **kwargs)
 
-    def create(self, url, expire=None, id=None):
-        if expire < 0:
-            expire = None
+    def _get(self, id):
+        return self.redis.get(id)
 
-        print('create', url, expire, id)
-        return ('idfromcreate', 'secret')
+    def _create(self, id, url, expire=None):
+        result = self.redis.set(id, url, ex=expire, nx=True)
+        if not result:
+            raise IdAlreadyExists('Id already exists')
 
-    def delete(self, id, secret):
-        print('delete', id, secret)
-        return False
+    def _delete(self, id):
+        self.redis.delete(id)
