@@ -12,10 +12,10 @@ def create_application():
     def before_request():
         g.database = app.config['DATABASE']
 
-    from vs.views.rest import rest
+    from vs.views.rest.v1 import rest as rest_v1
     from vs.views.url import url
 
-    app.register_blueprint(rest, url_prefix='/api/v1')
+    app.register_blueprint(rest_v1, url_prefix='/api/v1')
     app.register_blueprint(url)
 
     return app
