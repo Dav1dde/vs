@@ -2,6 +2,8 @@ from flask import g, current_app, abort, url_for
 from flask.ext.restful import reqparse
 from flask.ext import restful
 
+from vs.views.rest.v1.exception import MaxExpireException
+
 
 class ShortUrl(restful.Resource):
     def __init__(self):

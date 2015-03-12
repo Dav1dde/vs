@@ -1,2 +1,2 @@
-from vs.database.redis import Redis
+from vs.database.redisdb import Redis
 

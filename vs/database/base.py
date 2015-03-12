@@ -8,13 +8,27 @@ from itsdangerous import Signer, want_bytes
 import datetime
 import string
 import random
+import sys
+
+
+PY2 = sys.version_info[0] == 2
+if PY2:
+    text_type = unicode
+else:
+    text_type = str
+
+
+def want_unicode(s):
+    if not isinstance(s, text_type):
+        return s.decode('utf-8')
+    return s
 
 
 class NullSigner(object):
     def get_signature(self, id):
         return ''
 
-    def validate(self, secret):
+    def verify_signature(self, id, secret):
         return False
 
 
@@ -46,7 +60,7 @@ class VSDatabase(object):
         if result is None:
             raise IdNotFound('Id "{0}" not found'.format(id))
 
-        return result
+        return want_unicode(result)
 
     def has_id(self, id):
         try:
@@ -73,7 +87,7 @@ class VSDatabase(object):
             # if the key already exists, not our problem
             self._create(id, url, expire)
 
-        return (id, self._s.get_signature(id).decode('utf-8'))
+        return (id, want_unicode(self._s.get_signature(id)))
 
     def delete(self, id, secret):
         if self._s.verify_signature(want_bytes(id), want_bytes(secret)):
