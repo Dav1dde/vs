@@ -120,5 +120,5 @@ class ShortUrl(restful.Resource):
         return {'success': success}
 
 
-api.add_resource(ShortUrl, '/')
+api.add_resource(ShortUrl, '/short')
 

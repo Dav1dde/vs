@@ -15,7 +15,7 @@ def create_application():
     from vs.views.rest import rest
     from vs.views.url import url
 
-    app.register_blueprint(rest, url_prefix='/api')
+    app.register_blueprint(rest, url_prefix='/api/v1')
     app.register_blueprint(url)
 
     return app

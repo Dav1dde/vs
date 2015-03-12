@@ -6,11 +6,11 @@ Simple URL-Shortner service
 
 ## API ##
 
-| Endpoint | Method | Arguments                                                                                                  | Returns                                                                                     | Notes                                                                |
-|----------|--------|------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------|----------------------------------------------------------------------|
-| /api     | GET    | `{'id': 'Short URL Id'}`                                                                                   | `{'url': 'Returns URL the Id points to'}`                                                   |                                                                      |
-| /api     | PUT    | `{'url': 'URL to shorten', 'expire': 'Days until the short URL expires', 'id': 'Custom Id for short URL'}` | `{'id': 'Id of the short URL', 'url': 'Short URL', 'rel_url': 'Relative URL from service'}` | `id` might not be available, depending on service-configuration. |
-| /api     | DELETE | `{'id': 'Id to delete', 'secret': 'Secret required for deletion'}`                                         | `{'success': 'True'}`                                                                       | Deletion might not be possible, depending on service-configuration.  |
+| Endpoint      | Method | Arguments                                                                                                  | Returns                                                                                     | Notes                                                                |
+|---------------|--------|------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------|----------------------------------------------------------------------|
+| /api/v1/short | GET    | `{'id': 'Short URL Id'}`                                                                                   | `{'url': 'Returns URL the Id points to'}`                                                   |                                                                      |
+| /api/v1/short | PUT    | `{'url': 'URL to shorten', 'expire': 'Days until the short URL expires', 'id': 'Custom Id for short URL'}` | `{'id': 'Id of the short URL', 'url': 'Short URL', 'rel_url': 'Relative URL from service'}` | `id` might not be available, depending on service-configuration. |
+| /api/v1/short | DELETE | `{'id': 'Id to delete', 'secret': 'Secret required for deletion'}`                                         | `{'success': 'True'}`                                                                       | Deletion might not be possible, depending on service-configuration.  |
 
 
 Successful API-Calls will return HTTP-Statuscode 200.
@@ -41,3 +41,5 @@ optional arguments:
 ## Issues ##
 
 * Secrets (deletion) don't change for the same Id/Url
+* Custom Ids aren't checked if they are valid
+* URLs aren't checked if they are actually URLs
