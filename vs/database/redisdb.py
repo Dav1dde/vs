@@ -19,6 +19,9 @@ class Redis(VSDatabase):
         value = json.dumps(value)
         self.redis.hset(domain, key, value)
 
+    def _config_delete(self, domain):
+        self.redis.delete(domain)
+
     def _get(self, domain, id):
         key = '{0}#{1}'.format(domain, id)
         return self.redis.get(key)
