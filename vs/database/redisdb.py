@@ -10,7 +10,10 @@ class Redis(VSDatabase):
         self.redis = redis.StrictRedis(*args, **kwargs)
 
     def _config_get(self, domain, key):
-        return json.loads(self.redis.hget(domain, key))
+        val = self.redis.hget(domain, key)
+        if val is None:
+            return None
+        return json.loads(val)
 
     def _config_set(self, domain, key, value):
         value = json.dumps(value)
@@ -20,9 +23,9 @@ class Redis(VSDatabase):
         key = '{0}#{1}'.format(domain, id)
         return self.redis.get(key)
 
-    def _create(self, domain, id, url, expire=None):
+    def _create(self, domain, id, url, expiry=None):
         key = '{0}#{1}'.format(domain, id)
-        result = self.redis.set(key, url, ex=expire, nx=True)
+        result = self.redis.set(key, url, ex=expiry, nx=True)
         if not result:
             raise IdAlreadyExists('Id already exists')
 

@@ -20,16 +20,22 @@ DATABASE = vs.database.Redis(
 )
 
 # ---
-# Misc. Settings
+# Default domain configuration
 # ---
-# Default expiration setting in days (if expire tag is empty) (<= 0 infinite).
-DEFAULT_EXPIRE = -1
-# Maximum expiration in days (<= 0 infinite).
-MAX_EXPIRE = -1
-# Allow short-URL Ids
-CUSTOM_IDS = True
-# Disable deletion of short URLs
-DISABLE_DELETE = False
+DEFAULTS = {
+    # Default expiration setting in days (if expire tag is empty)
+    # (<= 0 infinite).
+    'default_expiry': -1,
+    # Maximum expiration in days (<= 0 infinite).
+    'max_expiry': -1,
+    # Allow short-URL Ids
+    'custom_ids': True
+}
+
+# ---
+# Misc
+# ---
+API_KEY = 'YouShouldChangeThisAsWell'
 
 
 try:

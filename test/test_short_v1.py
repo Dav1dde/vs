@@ -44,7 +44,7 @@ class ShortV1ApiTest(TestCase):
     def client_put(self):
         response = self.client.put(self.API_ENDPOINT, data={
             'url': 'http://github.com',
-            'expire': 3,
+            'expiry': 3,
             'id': 'customid'
         })
         self.assertTrue(response.status_code == 200)

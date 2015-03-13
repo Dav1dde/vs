@@ -2,6 +2,7 @@ from flask import Blueprint
 from flask.ext import restful
 
 from vs.views.rest.v1.short import ShortUrl
+from vs.views.rest.v1.domain import Domain
 
 
 errors = {
@@ -35,3 +36,4 @@ rest = Blueprint('rest', __name__)
 api = restful.Api(rest, errors=errors)
 
 api.add_resource(ShortUrl, '/short')
+api.add_resource(Domain, '/domain')
