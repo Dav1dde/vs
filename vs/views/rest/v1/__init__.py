@@ -18,6 +18,7 @@ def rest_errorhandler(exc):
 @rest.errorhandler(Exception)
 def rest_errorhandler(exc):
     ret = {'message': 'Internal Server Error', 'status': 500}
+    current_app.logger.exception('Unhandled server error in v1 API')
     if current_app.debug:
         ret['traceback'] = traceback.format_exc()
         ret['type'] = exc.__class__.__name__
