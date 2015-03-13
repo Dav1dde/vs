@@ -1,39 +1,30 @@
-from flask import Blueprint
+from flask import Blueprint, jsonify, current_app
 from flask.ext import restful
+import traceback
 
+from vs.database.exception import VSDatabaseException
 from vs.views.rest.v1.short import ShortUrl
 from vs.views.rest.v1.domain import Domain
 
 
-errors = {
-    'VSDatabaseException': {
-        'message': 'Internal backend error.',
-        'status': 500,
-    },
-    'IdNotFound': {
-        'message': 'A short URL with that Id does not exist.',
-        'status': 404,
-    },
-    'IdAlreadyExists': {
-        'message': 'Id already exists, chose a different Id.',
-        'status': 400
-    },
-    'InvalidDeletionSecret': {
-        'message': 'Invalid secret.',
-        'status': 400
-    },
-    'InvalidId': {
-        'message': 'Id contains invalid characters.',
-        'status': 400
-    },
-    'InvalidUrl': {
-        'message': 'Url does not contain scheme and/or netloc.',
-        'status': 400
-    }
-}
-
 rest = Blueprint('rest', __name__)
-api = restful.Api(rest, errors=errors)
 
+
+@rest.errorhandler(VSDatabaseException)
+def rest_errorhandler(exc):
+    return jsonify(exc.to_dict()), exc.status
+
+
+@rest.errorhandler(Exception)
+def rest_errorhandler(exc):
+    ret = {'message': 'Internal Server Error', 'status': 500}
+    if current_app.debug:
+        ret['traceback'] = traceback.format_exc()
+        ret['type'] = exc.__class__.__name__
+
+    return jsonify(ret), 500
+
+
+api = restful.Api(rest)
 api.add_resource(ShortUrl, '/short')
 api.add_resource(Domain, '/domain')

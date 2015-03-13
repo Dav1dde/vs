@@ -1,5 +1,19 @@
 class VSDatabaseException(Exception):
-    pass
+    def __init__(self, message, status=500, **kwargs):
+        Exception.__init__(self, message)
+
+        self.message = message
+        self.status = status
+        self.kwargs = kwargs
+
+    def to_dict(self):
+        ret = {
+            'message': self.message,
+            'status': self.status,
+            'type': self.__class__.__name__
+        }
+        ret.update(self.kwargs)
+        return ret
 
 
 class InvalidId(VSDatabaseException):

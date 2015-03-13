@@ -1,8 +1,6 @@
 from vs.database.exception import (
-    VSDatabaseException,
-    InvalidId, InvalidUrl,
-    IdNotFound, IdAlreadyExists,
-    InvalidDeletionSecret,
+    VSDatabaseException, IdNotFound, IdAlreadyExists,
+    InvalidDeletionSecret, InvalidUrl, InvalidId
 )
 
 from flask import request
@@ -89,7 +87,7 @@ class VSDatabase(object):
 
         result = self._get(domain, id)
         if result is None:
-            raise IdNotFound('Id "{0}" not found'.format(id))
+            raise IdNotFound('Id "{0}" not found'.format(id), 404)
 
         return want_unicode(result)
 
@@ -104,7 +102,7 @@ class VSDatabase(object):
     def create(self, url, id=None, expiry=None):
         p = urlparse(url)
         if not p.scheme or not p.netloc:
-            raise InvalidUrl('Url does not contain scheme and/or netloc')
+            raise InvalidUrl('Url does not contain scheme and/or netloc', 400)
 
         if not self.config_get('custom_ids'):
             id = None
@@ -128,9 +126,10 @@ class VSDatabase(object):
                     continue
                 break
         else:
-            if not all(c in self.ALLOWED_CHARS for c in id) or \
-                    len(id) > self.MAX_LENGTH:
-                raise InvalidId('Id contains invalid characters')
+            if not all(c in self.ALLOWED_CHARS for c in id):
+                raise InvalidId('Id contains invalid characters', 400)
+            if len(id) > self.MAX_LENGTH:
+                raise InvalidId('Id is too long', 400)
 
             # if the key already exists, not our problem
             self._create(domain, id, url, expiry=expiry)
@@ -144,7 +143,7 @@ class VSDatabase(object):
             self._delete(domain, id)
             return True
 
-        raise InvalidDeletionSecret('Invalid secret')
+        raise InvalidDeletionSecret('Invalid secret', 400)
 
     def _config_get(self, domain, key):
         raise NotImplementedError
