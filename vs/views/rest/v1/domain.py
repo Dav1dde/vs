@@ -3,6 +3,13 @@ from flask.ext.restful import reqparse
 from flask.ext import restful
 
 
+def req_boolean(val):
+    val = val.strip().lower()
+    if val not in ('true', 'false'):
+        raise ValueError()
+    return val in ('true',)
+
+
 class Domain(restful.Resource):
     CONFIG_KEYS = ('default_expiry', 'max_expiry', 'custom_ids', 'alias')
 
@@ -27,7 +34,7 @@ class Domain(restful.Resource):
             help='Set max expiry'
         )
         self.put_parser.add_argument(
-            'custom_ids', type=bool,
+            'custom_ids', type=req_boolean,
             help='Allow or disallow custom Ids'
         )
         self.put_parser.add_argument(
