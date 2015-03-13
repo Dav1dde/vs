@@ -3,77 +3,51 @@
 from unittest import TestCase
 import json
 
+from test.client import APIv1Client
+
 from vs.database.exception import IdNotFound, InvalidId, InvalidUrl
 from vs import create_application
 
 
 class ShortV1ApiTest(TestCase):
-    API_ENDPOINT = '/api/v1/short'
-
     def setUp(self):
         self.app = create_application()
         self.app.config.from_object('test.short_v1_config')
         self.app.config['DATABASE'].init_app(self.app)
         self.app.debug = True
-        self.client = self.app.test_client()
+        self.api = APIv1Client(self.app)
 
     def tearDown(self):
         pass
 
     def test_invalid_id(self):
-        response = self.client.put(self.API_ENDPOINT, data={
-            'url': 'http://github.com',
-            'id': 'customid+'
-        })
-        self.assertTrue(response.status_code == 400)
+        j = self.api.short.put(
+            {'url': 'http://github.com', 'id': 'customid+'}, expected=400
+        )
 
     def test_invalid_url(self):
         for url in ('I am not an url', 'http://'):
-            response = self.client.put(self.API_ENDPOINT, data={
-                'url': 'I am not an url',
-            })
-            self.assertTrue(response.status_code == 400, 'Allowed invalid Url')
+            j = self.api.short.put({'url': 'I am not an url'}, expected=400)
 
     def client_put(self):
-        response = self.client.put(self.API_ENDPOINT, data={
-            'url': 'http://github.com',
-            'expiry': 3,
-            'id': 'customid'
-        })
-        self.assertTrue(response.status_code == 200)
-        j = json.loads(response.data.decode('utf-8'))
+        j = self.api.short.put(
+            {'url': 'http://github.com', 'expiry': 3, 'id': 'customid'}
+        )
         self.assertTrue(j['id'] == 'customid')
 
-        response = self.client.put(self.API_ENDPOINT, data={
-            'url': 'http://gist.github.com'
-        })
-        self.assertTrue(response.status_code == 200)
-        j = json.loads(response.data.decode('utf-8'))
-
+        j = self.api.short.put({'url': 'http://gist.github.com'})
         return j['id'], j['secret']
 
     def client_get(self, id):
-        response = self.client.get(self.API_ENDPOINT, data={
-            'id': 'customid'
-        })
-        self.assertTrue(response.status_code == 200)
-        j = json.loads(response.data.decode('utf-8'))
+        j = self.api.short.get({'id': 'customid'})
         self.assertTrue(j['url'] == 'http://github.com')
 
-        response = self.client.get(self.API_ENDPOINT, data={
-            'id': id
-        })
-        self.assertTrue(response.status_code == 200)
+        j = self.api.short.get(data={'id': id})
+        self.assertTrue(j['url'] == 'http://gist.github.com')
 
     def client_delete(self, id, secret):
-        response = self.client.delete(self.API_ENDPOINT, data={
-            'id': id,
-            'secret': secret
-        })
-        self.assertTrue(response.status_code == 200)
-
-        response = self.client.get(self.API_ENDPOINT, data={'id': id})
-        self.assertTrue(response.status_code == 404, 'Id still exists')
+        self.api.short.delete({'id': id, 'secret': secret})
+        self.api.short.get({'id': id}, expected=404)
 
     def test_short(self):
         id, secret = self.client_put()
