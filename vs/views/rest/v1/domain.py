@@ -4,7 +4,7 @@ from flask.ext import restful
 
 
 class Domain(restful.Resource):
-    CONFIG_KEYS = ('default_expiry', 'max_expiry', 'custom_ids')
+    CONFIG_KEYS = ('default_expiry', 'max_expiry', 'custom_ids', 'alias')
 
     def __init__(self):
         self.get_parser = reqparse.RequestParser()
@@ -27,8 +27,12 @@ class Domain(restful.Resource):
             help='Set max expiry'
         )
         self.put_parser.add_argument(
-            'custom_ids', type=bool, required=True,
+            'custom_ids', type=bool,
             help='Allow or disallow custom Ids'
+        )
+        self.put_parser.add_argument(
+            'alias', type=str,
+            help='Set a domain alias for this domain'
         )
 
         self.delete_parser = reqparse.RequestParser()

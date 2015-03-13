@@ -65,26 +65,46 @@ class VSDatabase(object):
 
         return id
 
-    def config_get(self, key):
+    def config_get(self, key, domain=None):
         key = key.lower()
-        domain = urlparse(request.url).netloc
+        if domain is None:
+            domain = urlparse(request.url).netloc
         result = self._config_get(domain, key)
         if result is None:
             result = self._config_defaults.get(key)
         return result
 
-    def config_set(self, key, value):
+    def config_set(self, key, value, domain=None):
         key = key.lower()
-        domain = urlparse(request.url).netloc
+        if domain is None:
+            domain = urlparse(request.url).netloc
         self._config_set(domain, key, value)
 
-    def config_delete(self):
-        domain = urlparse(request.url).netloc
+    def config_delete(self, domain=None):
+        if domain is None:
+            domain = urlparse(request.url).netloc
         self._config_delete(domain)
 
-    def get(self, id):
-        domain = urlparse(request.url).netloc
+    def get_domain(self, domain=None):
+        """
+        Returns the domain or the alias (if set),
+        for the current domain.
+        This method requires a flask application-context,
+        if called without :param:`domain`.
 
+        :param domain: use this domain instead of the current domain
+        """
+        if domain is None:
+            domain = urlparse(request.url).netloc
+
+        alias = self.config_get('alias', domain=domain)
+        if alias is not None:
+            domain = alias
+
+        return domain
+
+    def get(self, id):
+        domain = self.get_domain()
         result = self._get(domain, id)
         if result is None:
             raise IdNotFound('Id "{0}" not found'.format(id), 404)
@@ -114,7 +134,7 @@ class VSDatabase(object):
         if expiry is not None:
             expiry = datetime.timedelta(days=expiry) if expiry > 0 else None
 
-        domain = urlparse(request.url).netloc
+        domain = self.get_domain()
 
         if id is None:
             while True:
@@ -137,7 +157,7 @@ class VSDatabase(object):
         return (id, expiry, want_unicode(self._s.get_signature(id)))
 
     def delete(self, id, secret):
-        domain = urlparse(request.url).netloc
+        domain = self.get_domain()
 
         if self._s.verify_signature(want_bytes(id), want_bytes(secret)):
             self._delete(domain, id)
