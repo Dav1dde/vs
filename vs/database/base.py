@@ -124,8 +124,8 @@ class VSDatabase(object):
         if not p.scheme or not p.netloc:
             raise InvalidUrl('Url does not contain scheme and/or netloc', 400)
 
-        if not self.config_get('custom_ids'):
-            id = None
+        if not self.config_get('custom_ids') and id is not None:
+            raise InvalidId('Custom Ids are disabled', 400)
 
         # use default if not set
         # infite < 0 (easier to work with)
