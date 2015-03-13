@@ -1,5 +1,5 @@
 from vs.database.exception import IdAlreadyExists, IdNotFound
-from vs.database.base import VSDatabase
+from vs.database.base import VSDatabase, want_unicode
 import redis
 import json
 
@@ -13,7 +13,7 @@ class Redis(VSDatabase):
         val = self.redis.hget(domain, key)
         if val is None:
             return None
-        return json.loads(val)
+        return json.loads(want_unicode(val))
 
     def _config_set(self, domain, key, value):
         value = json.dumps(value)
