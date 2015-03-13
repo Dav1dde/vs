@@ -5,6 +5,9 @@ from vs.database.exception import (
     InvalidDeletionSecret,
 )
 
+from flask import request
+
+
 from itsdangerous import Signer, want_bytes
 import datetime
 import string
@@ -59,8 +62,18 @@ class VSDatabase(object):
 
         return id
 
+    def config_get(self, key):
+        domain = urlparse(request.url).netloc
+        return self._config_get(domain, key)
+
+    def config_set(self, key, value):
+        domain = urlparse(request.url).netloc
+        self._config_set(domain, key, value)
+
     def get(self, id):
-        result = self._get(id)
+        domain = urlparse(request.url).netloc
+
+        result = self._get(domain, id)
         if result is None:
             raise IdNotFound('Id "{0}" not found'.format(id))
 
@@ -82,11 +95,13 @@ class VSDatabase(object):
         if expire is not None:
             expire = datetime.timedelta(days=expire) if expire > 0 else None
 
+        domain = urlparse(request.url).netloc
+
         if id is None:
             while True:
                 id = self.generate_id()
                 try:
-                    self._create(id, url, expire)
+                    self._create(domain, id, url, expire=expire)
                 except IdAlreadyExists:
                     # race condition, do it again
                     continue
@@ -97,23 +112,31 @@ class VSDatabase(object):
                 raise InvalidId('Id contains invalid characters')
 
             # if the key already exists, not our problem
-            self._create(id, url, expire)
+            self._create(domain, id, url, expire=expire)
 
         return (id, want_unicode(self._s.get_signature(id)))
 
     def delete(self, id, secret):
+        domain = urlparse(request.url).netloc
+
         if self._s.verify_signature(want_bytes(id), want_bytes(secret)):
-            self._delete(id)
+            self._delete(domain, id)
             return True
 
         raise InvalidDeletionSecret('Invalid secret')
 
-    def _get(self, id):
+    def _config_get(self, domain, key):
         raise NotImplementedError
 
-    def _create(self, id, url, expire=None):
+    def _config_set(self, domain, key, value):
         raise NotImplementedError
 
-    def _delete(self, id):
+    def _get(self, domain, id):
+        raise NotImplementedError
+
+    def _create(self, domain, id, url, expire=None):
+        raise NotImplementedError
+
+    def _delete(self, domain, id):
         raise NotImplementedError
 
