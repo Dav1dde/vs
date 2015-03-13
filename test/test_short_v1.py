@@ -21,25 +21,18 @@ class ShortV1ApiTest(TestCase):
         pass
 
     def test_invalid_id(self):
-        try:
-            response = self.client.put(self.API_ENDPOINT, data={
-                'url': 'http://github.com',
-                'id': 'customid+'
-            })
-        except InvalidId:
-            pass
-        else:
-            self.assertTrue(False, 'Allowed invalid Id')
+        response = self.client.put(self.API_ENDPOINT, data={
+            'url': 'http://github.com',
+            'id': 'customid+'
+        })
+        self.assertTrue(response.status_code == 400)
 
     def test_invalid_url(self):
         for url in ('I am not an url', 'http://'):
-            try:
-                response = self.client.put(self.API_ENDPOINT, data={
-                    'url': 'I am not an url',
-                })
-            except InvalidUrl:
-                continue
-            self.assertTrue(False, 'Allowed invalid Url')
+            response = self.client.put(self.API_ENDPOINT, data={
+                'url': 'I am not an url',
+            })
+            self.assertTrue(response.status_code == 400, 'Allowed invalid Url')
 
     def client_put(self):
         response = self.client.put(self.API_ENDPOINT, data={
@@ -79,12 +72,8 @@ class ShortV1ApiTest(TestCase):
         })
         self.assertTrue(response.status_code == 200)
 
-        try:
-            self.client.get(self.API_ENDPOINT, data={'id': id})
-        except IdNotFound:
-            pass
-        else:
-            self.assertTrue(False, 'Id still exists')
+        response = self.client.get(self.API_ENDPOINT, data={'id': id})
+        self.assertTrue(response.status_code == 404, 'Id still exists')
 
     def test_short(self):
         id, secret = self.client_put()
