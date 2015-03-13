@@ -50,7 +50,7 @@ class Domain(restful.Resource):
 
     def get(self):
         """
-        Returns the long url for a given short url.
+        Returns the configuration for the current domain.
         """
         args = self.get_parser.parse_args(strict=True)
         if not args['api_key'] == current_app.config['API_KEY']:
@@ -63,7 +63,7 @@ class Domain(restful.Resource):
 
     def put(self):
         """
-        Creates a new short url.
+        Sets the configuration for the current domain.
         """
         args = self.put_parser.parse_args(strict=True)
         if not args['api_key'] == current_app.config['API_KEY']:
@@ -76,7 +76,7 @@ class Domain(restful.Resource):
 
     def delete(self):
         """
-        Deletes a short url.
+        Resets the configuration for this domain to defaults.
         """
         args = self.delete_parser.parse_args(strict=True)
         if not args['api_key'] == current_app.config['API_KEY']:

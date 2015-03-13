@@ -45,6 +45,11 @@ class VSDatabase(object):
         self._config_defaults = dict()
 
     def init_app(self, app):
+        """
+        Initializes the database with the application object.
+
+        :param app: Flask application object
+        """
         secret = app.config['SECRET_KEY']
         if secret:
             self._s = Signer(secret)
@@ -54,6 +59,11 @@ class VSDatabase(object):
         )
 
     def generate_id(self, alphabet=None):
+        """
+        Generates a new unique Id, race conditions possible!
+
+        :param alphabet: Alphabet to generate the Id from.
+        """
         if alphabet is None:
             alphabet = self.ALLOWED_CHARS
 
@@ -66,6 +76,13 @@ class VSDatabase(object):
         return id
 
     def config_get(self, key, domain=None):
+        """
+        Fetches a configuration value from the underlaying database.
+
+        :param key: Key to lookup.
+        :param domain: If domain is not set the Flask
+            request object will be used to get the current domain.
+        """
         key = key.lower()
         if domain is None:
             domain = urlparse(request.url).netloc
@@ -75,12 +92,26 @@ class VSDatabase(object):
         return result
 
     def config_set(self, key, value, domain=None):
+        """
+        Setsa configuration value.
+
+        :param key: Key to set.
+        :param value: Value to set.
+        :param domain: If domain is not set the Flask
+            request object will be used to get the current domain.
+        """
         key = key.lower()
         if domain is None:
             domain = urlparse(request.url).netloc
         self._config_set(domain, key, value)
 
     def config_delete(self, domain=None):
+        """
+        Deletes (resets) the configuration for the domain.
+
+        :param domain: If domain is not set the Flask
+            request object will be used to get the current domain.
+        """
         if domain is None:
             domain = urlparse(request.url).netloc
         self._config_delete(domain)
@@ -104,6 +135,11 @@ class VSDatabase(object):
         return domain
 
     def get(self, id):
+        """
+        Fetches the long Url for the given Id.
+
+        :param id: Id to lookup.
+        """
         domain = self.get_domain()
         result = self._get(domain, id)
         if result is None:
@@ -112,6 +148,12 @@ class VSDatabase(object):
         return want_unicode(result)
 
     def has_id(self, id):
+        """
+        Tests if this Id is already used.
+
+        :param id: Id to lookup.
+        :return: bool
+        """
         try:
             result = self.get(id)
         except IdNotFound:
@@ -120,6 +162,14 @@ class VSDatabase(object):
         return result is not None
 
     def create(self, url, id=None, expiry=None):
+        """
+        Creates a new short URL.
+
+        :param id: Custom Id, if `None` :method:`generate_id` will be used.
+        :param expiry: Time in days after which the URL will expire
+            (`None` means it will never expire)
+        :return: (id, expiry, secret)
+        """
         p = urlparse(url)
         if not p.scheme or not p.netloc:
             raise InvalidUrl('Url does not contain scheme and/or netloc', 400)
@@ -170,6 +220,12 @@ class VSDatabase(object):
         )
 
     def delete(self, id, secret):
+        """
+        Deletes an short URL.
+
+        :param id: Id to delete.
+        :param secret: Secret returned by :method:`create` for the Id.
+        """
         domain = self.get_domain()
 
         if self._s.verify_signature(want_bytes(id), want_bytes(secret)):
