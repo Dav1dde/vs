@@ -12,7 +12,7 @@ from vs import create_application
 class ShortV1ApiTest(TestCase):
     def setUp(self):
         self.app = create_application()
-        self.app.config.from_object('test.short_v1_config')
+        self.app.config.from_object('test.vs_config')
         self.app.config['DATABASE'].init_app(self.app)
         self.app.debug = True
         self.api = APIv1Client(self.app)
