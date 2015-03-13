@@ -127,12 +127,21 @@ class VSDatabase(object):
         if not self.config_get('custom_ids'):
             id = None
 
+        # use default if not set
+        # infite < 0 (easier to work with)
         if expiry is None:
             expiry = self.config_get('default_expiry')
+        expiry = -1 if expiry is None else expiry
 
-        expiry = min(expiry, self.config_get('max_expiry'))
-        if expiry is not None:
-            expiry = datetime.timedelta(days=expiry) if expiry > 0 else None
+        max_expiry = self.config_get('max_expiry')
+        if max_expiry is not None and max_expiry > 0:
+            if expiry > 0:
+                expiry = min(expiry, max_expiry)
+            else:
+                expiry = max_expiry
+
+        # infinite = None (return value)
+        expiry = datetime.timedelta(days=expiry) if expiry > 0 else None
 
         domain = self.get_domain()
 
@@ -154,7 +163,11 @@ class VSDatabase(object):
             # if the key already exists, not our problem
             self._create(domain, id, url, expiry=expiry)
 
-        return (id, expiry, want_unicode(self._s.get_signature(id)))
+        return (
+            id,
+            getattr(expiry, 'days', None),
+            want_unicode(self._s.get_signature(id))
+        )
 
     def delete(self, id, secret):
         domain = self.get_domain()
