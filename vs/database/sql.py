@@ -27,6 +27,9 @@ class Sql(VSDatabase):
             self.session.commit()
             self.session.remove()
 
+    def initialize(self):
+        self.create_all()
+
     def create_all(self):
         Base.metadata.create_all(self.engine)
 

@@ -58,6 +58,13 @@ class VSDatabase(object):
             (k.lower(), v) for k, v in app.config['DEFAULTS'].items()
         )
 
+    def initialize(self):
+        """
+        Function which is supposed to initialize the database
+        only once. This can be used for creating SQL schemes.
+        """
+        pass
+
     def generate_id(self, alphabet=None):
         """
         Generates a new unique Id, race conditions possible!
