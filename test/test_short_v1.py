@@ -18,30 +18,31 @@ class ShortV1Tests(object):
         for url in ('I am not an url', 'http://'):
             j = self.api.short.put({'url': 'I am not an url'}, expected=400)
 
-    def client_put(self):
-        j = self.api.short.put(
+    def test_short(self):
+        j1 = self.api.short.put(
             {'url': 'http://github.com', 'expiry': 3, 'id': 'customid'}
         )
-        self.assertTrue(j['id'] == 'customid')
+        self.assertTrue(j1['id'] == 'customid')
+        self.api.short.put(
+            {'url': 'http://github.com', 'id': 'customid'}, expected=400
+        )
 
-        j = self.api.short.put({'url': 'http://gist.github.com'})
-        return j['id'], j['secret']
+        j2 = self.api.short.put({'url': 'http://gist.github.com'})
 
-    def client_get(self, id):
         j = self.api.short.get({'id': 'customid'})
         self.assertTrue(j['url'] == 'http://github.com')
 
-        j = self.api.short.get(data={'id': id})
+        j = self.api.short.get(data={'id': j2['id']})
         self.assertTrue(j['url'] == 'http://gist.github.com')
 
-    def client_delete(self, id, secret):
-        self.api.short.delete({'id': id, 'secret': secret})
-        self.api.short.get({'id': id}, expected=404)
+        self.api.short.delete({'id': j2['id'], 'secret': j2['secret']})
+        self.api.short.get({'id': j2['id']}, expected=404)
 
-    def test_short(self):
-        id, secret = self.client_put()
-        self.client_get(id)
-        self.client_delete(id, secret)
+        self.api.short.delete({'id': 'customid', 'secret': j1['secret']})
+        self.api.short.get({'id': 'customid'}, expected=404)
+        j1 = self.api.short.put({'url': 'http://github.com', 'id': 'customid'})
+        self.api.short.get({'id': 'customid'})
+        self.api.short.delete({'id': 'customid', 'secret': j1['secret']})
 
 
 class ShortV1TestsRedis(VSTestCase, ShortV1Tests):
