@@ -1,25 +1,15 @@
 # encoding: utf-8
 
-from unittest import TestCase
 import json
 
 from test.client import APIv1Client
+from test.case import VSTestCase
 
 from vs.database.exception import IdNotFound, InvalidId, InvalidUrl
 from vs import create_application
 
 
-class ShortV1ApiTest(TestCase):
-    def setUp(self):
-        self.app = create_application()
-        self.app.config.from_object('test.vs_config')
-        self.app.config['DATABASE'].init_app(self.app)
-        self.app.debug = True
-        self.api = APIv1Client(self.app)
-
-    def tearDown(self):
-        pass
-
+class DomainV1Tests(object):
     def test_domain(self):
         self.api.short.put({'url': 'http://github.com', 'id': 'works'})
         j = self.api.short.get({'id': 'works'})
@@ -64,3 +54,15 @@ class ShortV1ApiTest(TestCase):
         self.api.domain.get({'api_key': 'API_KEY'}, expected=200)
         self.api.domain.put({'api_key': 'API_KEY'}, expected=200)
         self.api.domain.delete({'api_key': 'API_KEY'}, expected=200)
+
+
+class DomainV1TestsRedis(VSTestCase, DomainV1Tests):
+    def setUp(self):
+        self.app = self.create_app(self.get_redis())
+        self.api = APIv1Client(self.app)
+
+
+class DomainV1TestsSql(VSTestCase, DomainV1Tests):
+    def setUp(self):
+        self.app = self.create_app(self.get_sql())
+        self.api = APIv1Client(self.app)
