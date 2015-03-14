@@ -30,11 +30,11 @@ class Redis(VSDatabase):
         key = '{0}#{1}'.format(domain, id)
         result = self.redis.set(key, url, ex=expiry, nx=True)
         if not result:
-            raise IdAlreadyExists('Id already exists')
+            raise IdAlreadyExists('Id already exists', 400)
 
     def _delete(self, domain, id):
         key = '{0}#{1}'.format(domain, id)
         result = self.redis.delete(key)
         if result == 0:
-            raise IdNotFound('Id not found')
+            raise IdNotFound('Id not found', 404)
 

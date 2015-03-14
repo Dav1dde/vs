@@ -71,7 +71,7 @@ class Sql(VSDatabase):
             self.session.flush()
         except sqlalchemy.exc.IntegrityError:
             self.session.rollback()
-            raise IdAlreadyExists('Id already exists')
+            raise IdAlreadyExists('Id already exists', 400)
 
     def _delete(self, domain, id):
         c = self.session.query(ShortURL) \
@@ -79,7 +79,7 @@ class Sql(VSDatabase):
             .filter(ShortURL.id == id).first()
 
         if c is None:
-            raise IdNotFound('Id not found')
+            raise IdNotFound('Id not found', 404)
 
         self.session.delete(c)
 
