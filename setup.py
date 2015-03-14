@@ -15,7 +15,8 @@ if __name__ == '__main__':
             'flask',
             'flask-restful',
             'itsdangerous',
-            'redis'
+            'redis',
+            'sqlalchemy'
         ],
         entry_points={
             'console_scripts': [
