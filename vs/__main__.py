@@ -29,6 +29,10 @@ def main(argv=None):
     ns = parser.parse_args(argv)
 
     import vs.__main__
+    # workaround for setuptools generated script
+    # not beeing able to import local_config.py
+    if '' not in sys.path:
+        sys.path.insert(0, '')
     getattr(vs.__main__, ns.operation)(ns)
 
 
