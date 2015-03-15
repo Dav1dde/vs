@@ -55,6 +55,22 @@ class DomainV1Tests(object):
         self.api.domain.put({'api_key': 'API_KEY'}, expected=200)
         self.api.domain.delete({'api_key': 'API_KEY'}, expected=200)
 
+    def test_alphabet(self):
+        self.api.domain.put(
+            {'api_key': 'API_KEY', 'alphabet': 'a123'}, expected=200
+        )
+
+        self.api.short.put({'url': 'http://github.com', 'id': 'a123'})
+        self.api.short.get({'id': 'a123'})
+
+        self.api.short.put(
+            {'url': 'http://github.com', 'id': 'b123'}, expected=400
+        )
+
+        self.api.domain.delete({'api_key': 'API_KEY'})
+
+        self.api.short.put({'url': 'http://github.com', 'id': 'b123'})
+
 
 class DomainV1TestsRedis(VSTestCase, DomainV1Tests):
     def setUp(self):

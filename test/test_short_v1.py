@@ -10,8 +10,13 @@ from vs.database.exception import IdNotFound, InvalidId, InvalidUrl
 
 class ShortV1Tests(object):
     def test_invalid_id(self):
-        j = self.api.short.put(
+        # invalid character
+        self.api.short.put(
             {'url': 'http://github.com', 'id': 'customid+'}, expected=400
+        )
+        # too long
+        self.api.short.put(
+            {'url': 'http://github.com', 'id': 'asd'*100}, expected=400
         )
 
     def test_invalid_url(self):
