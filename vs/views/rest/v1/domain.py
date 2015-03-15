@@ -10,6 +10,14 @@ def req_boolean(val):
     return val in ('true',)
 
 
+def min_length_str(length):
+    def validator(s):
+        if len(set(s)) < length:
+            raise ValueError()
+        return str(s)
+    return validator
+
+
 class Domain(restful.Resource):
     CONFIG_KEYS = (
         'default_expiry', 'max_expiry',
@@ -45,7 +53,7 @@ class Domain(restful.Resource):
             help='Set a domain alias for this domain'
         )
         self.put_parser.add_argument(
-            'alphabet', type=str,
+            'alphabet', type=min_length_str(3),
             help='Set the Id alphabet'
         )
 
