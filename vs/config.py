@@ -3,6 +3,7 @@
 # ---
 
 import os
+import string
 import vs.database
 
 # ---
@@ -38,7 +39,9 @@ DEFAULTS = {
     # If a domain alias is set all previously configured
     # short URLs are ignored, but not deleted
     # (resetting the alias will "restore" the old links).
-    'alias': None
+    'alias': None,
+    # Alphabet from which Ids are constructed and validated against
+    'alphabet': string.ascii_letters + string.digits + '-_'
 }
 
 # ---

@@ -37,8 +37,7 @@ class NullSigner(object):
 
 
 class VSDatabase(object):
-    ALLOWED_CHARS = string.ascii_letters + string.digits + '-_'
-    MAX_LENGTH = 20
+    MAX_LENGTH = 50
 
     def __init__(self):
         self._s = NullSigner()
@@ -72,7 +71,7 @@ class VSDatabase(object):
         :param alphabet: Alphabet to generate the Id from.
         """
         if alphabet is None:
-            alphabet = self.ALLOWED_CHARS
+            alphabet = self.config_get('alphabet')
 
         length = 3
         id = ''.join(random.sample(alphabet, length))
@@ -212,10 +211,10 @@ class VSDatabase(object):
                     continue
                 break
         else:
-            if not all(c in self.ALLOWED_CHARS for c in id):
-                raise InvalidId('Id contains invalid characters', 400)
             if len(id) > self.MAX_LENGTH:
                 raise InvalidId('Id is too long', 400)
+            if not all(c in self.config_get('alphabet') for c in id):
+                raise InvalidId('Id contains invalid characters', 400)
 
             # if the key already exists, not our problem
             self._create(domain, id, url, expiry=expiry)

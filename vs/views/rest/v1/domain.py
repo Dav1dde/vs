@@ -11,7 +11,10 @@ def req_boolean(val):
 
 
 class Domain(restful.Resource):
-    CONFIG_KEYS = ('default_expiry', 'max_expiry', 'custom_ids', 'alias')
+    CONFIG_KEYS = (
+        'default_expiry', 'max_expiry',
+        'custom_ids', 'alias', 'alphabet'
+    )
 
     def __init__(self):
         self.get_parser = reqparse.RequestParser()
@@ -40,6 +43,10 @@ class Domain(restful.Resource):
         self.put_parser.add_argument(
             'alias', type=str,
             help='Set a domain alias for this domain'
+        )
+        self.put_parser.add_argument(
+            'alphabet', type=str,
+            help='Set the Id alphabet'
         )
 
         self.delete_parser = reqparse.RequestParser()

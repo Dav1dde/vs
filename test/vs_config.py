@@ -1,4 +1,5 @@
 import vs.database
+import string
 
 SECRET_KEY = 'SECRET_KEY'
 API_KEY = 'API_KEY'
@@ -11,5 +12,6 @@ DEFAULTS = {
     'default_expiry': -1,
     'max_expiry': -1,
     'custom_ids': True,
-    'alias': None
+    'alias': None,
+    'alphabet': string.ascii_letters + string.digits + '-_'
 }

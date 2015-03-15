@@ -96,7 +96,7 @@ class Config(Base):
     max_expiry = Column(Integer)
     custom_ids = Column(Boolean)
     alias = Column(String(20))
-    id_chars = Column(String(100))
+    alphabet = Column(String(100))
 
 
 class ShortURL(Base):
