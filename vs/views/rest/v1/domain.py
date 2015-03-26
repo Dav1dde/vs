@@ -88,6 +88,7 @@ class Domain(restful.Resource):
             value = args.get(key)
             if value is not None:
                 g.database.config_set(key, value)
+    post = put
 
     def delete(self):
         """

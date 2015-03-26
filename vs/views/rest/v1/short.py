@@ -60,6 +60,7 @@ class ShortUrl(restful.Resource):
             'url': url_for('url.resolve', id=id, _external=True),
             'rel_url': url_for('url.resolve', id=id)
         }
+    post = put
 
     def delete(self):
         """
