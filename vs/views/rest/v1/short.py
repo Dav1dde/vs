@@ -57,8 +57,8 @@ class ShortUrl(restful.Resource):
         )
         return {
             'id': id, 'expiry': expiry, 'secret': secret,
-            'url': url_for('url.resolve', id=id, _external=True),
-            'rel_url': url_for('url.resolve', id=id)
+            'url': url_for('index.url', id=id, _external=True),
+            'rel_url': url_for('index.url', id=id)
         }
     post = put
 

@@ -1,0 +1,89 @@
+
+input:disabled  {
+    background-color: #fafafa;
+}
+
+main {
+    position: absolute;
+    top: 33%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+}
+
+main section header {
+    text-align: center;
+}
+
+main section input {
+    border: 0;
+    border-top: 1px solid lightgray;
+    border-bottom: 1px solid lightgray;
+
+    width: 350px;
+    height: 18pt;
+
+    font-size: 15pt;
+    text-align: center;
+    color: #3a3a3a;
+
+    margin: 10px 0 3px;
+    padding: 2px;
+}
+
+main section article header h3 {
+    margin: 5px 0 0 0;
+}
+
+main section article {
+    margin: 20px 0 0 0;
+}
+
+main section article.button-container {
+    text-align: right;
+    margin: 30px 0;
+}
+
+
+main section article a.btn {
+    /* http://www.bestcssbuttongenerator.com/#/sMS6wtjhiQ */
+	-moz-box-shadow:inset 0px 1px 0px 0px #54a3f7;
+	-webkit-box-shadow:inset 0px 1px 0px 0px #54a3f7;
+	box-shadow:inset 0px 1px 0px 0px #54a3f7;
+	background-color:#007dc1;
+	-moz-border-radius:3px;
+	-webkit-border-radius:3px;
+	border-radius:3px;
+	border:1px solid #124d77;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:arial;
+	font-size:13px;
+	padding:6px 24px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #154682;
+}
+
+main section article a.btn:hover {
+    background-color:#0061a7;
+}
+
+main section article a.btn:active {
+	position:relative;
+	top:1px;
+}
+
+.result-container {
+    opacity: 0.0;
+}
+
+main section input:focus{
+    outline: none;
+}
+
+#error {
+    font-size: 115%;
+    font-weight: bold;
+    color: red;
+}

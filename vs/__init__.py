@@ -13,9 +13,9 @@ def create_application():
         g.database = app.config['DATABASE']
 
     from vs.views.rest.v1 import rest as rest_v1
-    from vs.views.url import url
+    from vs.views.index import index
 
     app.register_blueprint(rest_v1, url_prefix='/api/v1')
-    app.register_blueprint(url)
+    app.register_blueprint(index)
 
     return app

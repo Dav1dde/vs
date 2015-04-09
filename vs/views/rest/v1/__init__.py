@@ -7,16 +7,16 @@ from vs.views.rest.v1.short import ShortUrl
 from vs.views.rest.v1.domain import Domain
 
 
-rest = Blueprint('rest', __name__)
+rest = Blueprint('rest_v1', __name__)
 
 
 @rest.errorhandler(VSDatabaseException)
-def rest_errorhandler(exc):
+def rest_error_handler(exc):
     return jsonify(exc.to_dict()), exc.status
 
 
 @rest.errorhandler(Exception)
-def rest_errorhandler(exc):
+def rest_error_handler(exc):
     ret = {'message': 'Internal Server Error', 'status': 500}
     current_app.logger.exception('Unhandled server error in v1 API')
     if current_app.debug:

@@ -21,6 +21,12 @@ DATABASE = vs.database.Redis(
 )
 
 # ---
+# Web-Frontend
+# ---
+# Enable or disable the web-frontend
+ENABLE_FRONTEND = True
+
+# ---
 # Default domain configuration
 # ---
 DEFAULTS = {

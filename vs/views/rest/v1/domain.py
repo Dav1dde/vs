@@ -25,12 +25,6 @@ class Domain(restful.Resource):
     )
 
     def __init__(self):
-        self.get_parser = reqparse.RequestParser()
-        self.get_parser.add_argument(
-            'api_key', type=str, required=True,
-            help='API-Key'
-        )
-
         self.put_parser = reqparse.RequestParser()
         self.put_parser.add_argument(
             'api_key', type=str, required=True,
@@ -67,10 +61,6 @@ class Domain(restful.Resource):
         """
         Returns the configuration for the current domain.
         """
-        args = self.get_parser.parse_args(strict=True)
-        if not args['api_key'] == current_app.config['API_KEY']:
-            return abort(403)
-
         ret = dict()
         for key in self.CONFIG_KEYS:
             ret[key] = g.database.config_get(key)

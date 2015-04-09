@@ -4,5 +4,7 @@ __pycache__/
 *.kdev*
 local_config.py
 *.pid
+.idea/
+vs.db
 
 TODO
