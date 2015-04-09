@@ -47,8 +47,8 @@ class DomainV1Tests(object):
         self.assertTrue(j['url'] == 'http://github.com')
 
     def test_api_key(self):
-        self.api.domain.get({'api_key': 'ThisIsWrong'}, expected=403)
-        self.api.domain.put({'api_key': 'ThisIsWrong'}, expected=403)
+        self.api.domain.get({'api_key': 'ThisIsWrong'}, expected=200)
+        self.api.domain.put({'api_key': 'ThisIsWrong'}, expected=403    )
         self.api.domain.delete({'api_key': 'ThisIsWrong'}, expected=403)
 
         self.api.domain.get({'api_key': 'API_KEY'}, expected=200)
