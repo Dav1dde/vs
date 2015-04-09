@@ -6,6 +6,7 @@ def create_application():
 
     app = Flask(__name__)
     app.config.from_object('vs.config')
+    app.config['PROPAGATE_EXCEPTIONS'] = True
     app.config['DATABASE'].init_app(app)
 
     @app.before_request
