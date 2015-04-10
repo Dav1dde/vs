@@ -177,10 +177,6 @@ class VSDatabase(object):
         :return: (id, expiry, secret)
         """
         p = urlparse(url)
-        if not p.scheme and not p.netloc:
-            p = urlparse('http://{0}'.format(url))
-            url = p.geturl()
-
         if not p.scheme or not p.netloc:
             raise InvalidUrl('Url does not contain scheme and/or netloc', 400)
 
