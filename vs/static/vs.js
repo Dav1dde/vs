@@ -28,7 +28,11 @@ function _apiError(xhr) {
 }
 
 function submit() {
-    data = {url: $('#url').val()};
+    var data = {};
+
+    var url = $('#url').val();
+    data.url = url.match(/^\w+:\/\//) ? url : 'http://'+url;
+
     var id = $('#id').val().trim();
     if (id.length > 0) {
         data.id = id;
